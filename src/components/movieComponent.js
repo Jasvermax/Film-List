@@ -4,10 +4,16 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { Icon } from "react-native-elements";
 
 export const ShowMovie = (props) => {
-    const {image, title, viewers } = props;
+    const {image, title, viewers, isHome } = props;
 
     return(
-        <View style={styles.horizontalDataContainer}>
+        <View style={[
+            styles.horizontalDataContainer,
+            { flex: isHome ? 
+                           1 
+                           : 
+                           0.5 }
+        ]}>
             <Image
                 style={styles.movieImage}
                 source={{ uri: props.image }}
@@ -42,6 +48,54 @@ export const ShowMovie = (props) => {
     )
 };
 
+export const MovieExplanation = (props) => {
+    const { name, value, isRating, rating } = props;
+    return (
+        <View style={styles.mainContainer}>
+           <View style={styles.nameContainer}>
+              <Text style={styles.generalFontSize}>{name}</Text>
+        </View>
+        <Text style={styles.generalFontSize}>: </Text>
+        <View style={styles.valueContainer}>
+            {
+                isRating ?
+                    rating === 5 ?
+                       <Image
+                           style={styles.ratingImage}
+                           source={require('../../assets/images/five-stars.png')} // Ganti tulisan 'path'
+                       />
+                       :
+                      rating === 4 ?
+                          <Image
+                              style={styles.ratingImage}
+                              source={require('../../assets/images/four-stars.png')} // Ganti tulisan 'path'
+                          />
+                          :
+                         rating === 3 ?
+                             <Image
+                                 style={styles.ratingImage}
+                                 source={require('../../assets/images/three-stars.png')} // Ganti tulisan 'path'
+                             />
+                             :
+                            rating === 2 ?
+                              <Image
+                                 style={styles.ratingImage}
+                                 source={require('../../assets/images/two-stars.png')} // Ganti tulisan 'path'
+                              />
+                              :
+                              <Image
+                                 style={styles.ratingImage}
+                                 source={require('../../assets/images/star.png')} // Ganti tulisan 'path'
+
+                              />
+                      :
+                      <Text style={styles.textValue}>{value}</Text>
+           }
+       </View>
+   </View>
+  )
+};
+
 const styles = StyleSheet.create({
     horizontalDataContainer: {
         margin: 8,
@@ -72,5 +126,26 @@ const styles = StyleSheet.create({
     },
     viewersText: {
         marginLeft: 8
-    }
+    },
+    mainContainer: {
+        flexDirection: 'row',
+        margin: 8
+    },
+    nameContainer: {
+        flex: 1
+    },
+    generalFontSize: {
+        fontSize: 16
+    },
+    valueContainer: {
+        flex: 3
+    },
+    textValue: {
+        textAlign: 'justify',
+        fontSize: 16
+    },
+    ratingImage: {
+        width: 100,
+        height: 20
+    },
 });

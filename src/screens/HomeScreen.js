@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import { movieData } from "../../data/movieData";
 import { ShowMovie } from "../components/movieComponent";
 import { ButtonComponent } from "../components/buttonComponent";
@@ -8,27 +8,32 @@ const HomeScreen = ({ navigation }) => {
   const [recommended, setRecommended] = useState([]);
   const [mostViewed, setMostViewed] = useState([]);
 
-  const compareRating = (a, b) => b.rating - a.rating;
-  const compareViewers = (a, b) => b.viewers - a.viewers;
+  const [allMostViewed, setAllMostViewed] = useState([]);
 
   useEffect(() => {
-    setRecommended([...movieData].sort(compareRating));
-    setMostViewed([...movieData].sort(compareViewers));
+    const threeRecommended = [];
+    const threeMostViewed = [];
+
+    const sortedRecommended = [...movieData].sort((a, b) => b.rating - a.rating);
+    const sortedMostViewed = [...movieData].sort((a, b) => b.viewers - a.viewers);
+
+    for (let i = 0; i < 3; i++) {
+      threeRecommended.push(sortedRecommended[i]);
+      threeMostViewed.push(sortedMostViewed[i]);
+    }
+
+    setRecommended([...movieData].sort((a, b) => b.rating - a.rating));
+    setMostViewed([...movieData].sort((a, b) => b.viewers - a.viewers));
+    
   }, []);
 
   const renderMovieItem = ({ item }) => (
     <View style={styles.dataContainer}>
-      <Image
-        style={styles.movieImage}
-        source={{ uri: item.imageLink }}
-      />
+      <Image style={styles.movieImage} source={{ uri: item.imageLink }} />
 
       <View style={styles.movieDescriptionContainer}>
         <Text style={styles.title}>{item.title}</Text>
-
-        <View style={styles.yearContainer}>
-          <Text>{item.year}</Text>
-        </View>
+        <Text style={styles.yearText}>{item.year}</Text>
 
         <Image
           style={styles.starImageContainer}
@@ -46,10 +51,16 @@ const HomeScreen = ({ navigation }) => {
         />
 
         <ButtonComponent
+          title="View Details"
           onPress={() =>
             navigation.navigate("DetailMovieScreen", {
               title: item.title,
               year: item.year,
+              imageLink: item.imageLink,
+              starring: item.starring,
+              rating: item.rating,
+              viewers: item.viewers,
+              description: item.description,
             })
           }
         />
@@ -67,10 +78,14 @@ const HomeScreen = ({ navigation }) => {
         ListHeaderComponent={
           <View>
             {/* MOST VIEWED */}
-            <View style={styles.mainCategoryContainer}>
-              <Text style={styles.categoryText}>Most Viewed</Text>
+            <Text style={styles.categoryText}>Most Viewed</Text>
+            
+            <View style={styles.seeAllContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('MostViewedScreen', {allMostViewed: mostViewed})}>
+                  <Text style={styles.seeAllText}>See All</Text>
+              </TouchableOpacity>
             </View>
-
+            
             <FlatList
               horizontal
               data={mostViewed}
@@ -80,15 +95,33 @@ const HomeScreen = ({ navigation }) => {
                   image={item.imageLink}
                   title={item.title}
                   viewers={item.viewers.toLocaleString()}
+                  isHome={true}
                 />
               )}
               showsHorizontalScrollIndicator={false}
+              ListEmptyComponent={
+                <View style={{ alignItems: 'center' }}>
+                  <Text>
+                    No items in this category
+                  </Text>
+                </View>
+              }
             />
+            
+
+            {/* <View style={styles.categoryMainContainer}>
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>Most Viewed</Text>
+                </View>
+                <View style={styles.seeAllContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('MostViewedScreen')}>
+                        <Text style={styles.seeAllText}>See All</Text>
+                    </TouchableOpacity>
+                </View>
+            </View> */}
 
             {/* RECOMMENDED */}
-            <View style={styles.mainCategoryContainer}>
-              <Text style={styles.categoryText}>Recommended</Text>
-            </View>
+            <Text style={styles.categoryText}>Recommended</Text>
           </View>
         }
         ListFooterComponent={
@@ -98,61 +131,74 @@ const HomeScreen = ({ navigation }) => {
             of the same type.
           </Text>
         }
+        ListEmptyComponent={
+          <Text>
+            No items in this category
+          </Text>
+        }
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    mainContainer:{
-        flex: 1,
-    },
-    flatListContainer:{
-        padding:8,
-    },
-    movieImage:{
-        width: 130,
-        height: 200,
-        borderRadius: 10,
-    },
-    dataContainer:{
-        margin: 8,
-        borderColor: "#96ceb4",
-        borderWidth: 2,
-        borderRadius: 10,
-        padding: 16,
-        flexDirection: 'row',
-    },
-    title:{
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    movieDescriptionContainer:{
-        flex: 1,
-        justifyContent: 'center',
-        marginLeft: 8,
-    },
-    yearContainer:{
-        marginTop: 8,
-        marginBottom: 8,
-    },
-    mainCategoryContainer: {
-        marginTop: 8,
-        marginLeft: 8,
-        marginRight: 8,
-        flexDirection: 'row'
-    },
-    categoryContainer: {
-        flex: 1
-    },
-    categoryText: {
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
-    starImageContainer: {
-        width: 100,
-        height: 20,
-    },
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  flatListContainer: {
+    padding: 8,
+  },
+  dataContainer: {
+    flexDirection: "row",
+    margin: 8,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: "#96ceb4",
+    borderRadius: 10,
+  },
+  movieImage: {
+    width: 130,
+    height: 200,
+    borderRadius: 10,
+  },
+  movieDescriptionContainer: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: "center",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  yearText: {
+    marginVertical: 8,
+  },
+  starImageContainer: {
+    width: 100,
+    height: 20,
+    marginBottom: 8,
+  },
+  categoryText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginVertical: 8,
+    marginLeft: 8,
+  },
+  footerText: {
+    fontSize: 14,
+    margin: 12,
+    color: "#555",
+  },
+  seeAllContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center'
+  },
+  seeAllText: {
+    color: '#009688',
+    textDecorationLine: 'underline'
+  }
 });
 
 export default HomeScreen;

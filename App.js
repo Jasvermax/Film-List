@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import TryCodeScreen from './src/screens/TryCodeScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MainNavigator from './src/navigator/MainNavigator';
+import DetailMovieScreen from './src/screens/DetailMovieScreen';
 
 const App = () => {
     return (
@@ -12,6 +13,7 @@ const App = () => {
                 {/* <TryCodeScreen/> */}
                 {/* <HomeScreen/> */}
                 <MainNavigator />
+                {/* <DetailMovieScreen /> */}
             </NavigationContainer>
         </SafeAreaProvider> 
     )

@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import DetailMovieScreen from '../screens/DetailMovieScreen';
+import MostViewedScreen from '../screens/MostViewedScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,8 +15,13 @@ const MainNavigator = () => {
             />
 
             <Stack.Screen
-                name="DetailMovie"
+                name="DetailMovieScreen"
                 component={DetailMovieScreen}
+            />
+
+            <Stack.Screen
+                name="MostViewedScreen"
+                component={MostViewedScreen}
             />
         </Stack.Navigator>
     );

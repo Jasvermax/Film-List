@@ -1,27 +1,32 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-export const ButtonComponent = (props) => {
-    return (
-        <View style={styles.mainButtonContainer}>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity {...props} >
-                    <Text>SEE DETAILS</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    )
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
+
+export const ButtonComponent = ({ onPress }) => {
+  return (
+    <View style={styles.mainButtonContainer}>
+      <TouchableOpacity onPress={onPress} style={styles.buttonContainer}>
+        <Text style={styles.buttonText}>SEE DETAILS</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    mainButtonContainer: {
-        alignItems: 'baseline'
-    },
-    buttonContainer: {
-        marginTop: 8,
-        borderRadius: 10,
-        borderWidth: 1,
-        alignItems: 'center',
-        padding: 8,
-        backgroundColor: '#cce6cc'
-    },
+  mainButtonContainer: {
+    alignItems: "flex-start",
+    marginTop: 8,
+  },
+  buttonContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#96ceb4",
+    backgroundColor: "#cce6cc",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontWeight: "bold",
+    color: "#333",
+  },
 });
